@@ -2,21 +2,26 @@ import { useEffect, useState } from "react";
 import LoadingWheel from "./LoadingWheel";
 import Forbidden from "./Forbidden";
 import LoadingError from "./LoadingError";
+import { Link, useOutletContext } from "react-router-dom";
+import { convertDate, truncate } from "./utils";
 
 export default function Posts() {
+  const { loggedIn } = useOutletContext();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
-  const [forbidden, setForbidden] = useState(false);
   const [posts, setPosts] = useState();
 
   useEffect(() => {
-    const hostname = import.meta.env.VITE_HOSTNAME || "http://localhost:3000";
     const fetchPosts = async () => {
-      await fetch(hostname + "/api/posts", { credentials: "include" })
+      await fetch(
+        import.meta.env.VITE_HOSTNAME + "/api/posts?isPublished=true",
+        {
+          credentials: "include",
+        }
+      )
         .then((res) => {
           if (res.status === 403) {
             setLoading(false);
-            setForbidden(true);
             throw new Error("Forbidden");
           }
           return res;
@@ -30,7 +35,6 @@ export default function Posts() {
           if (error.message === "Forbidden") {
             return;
           }
-          // console.log(error);
           return setError(error);
         });
     };
@@ -38,14 +42,33 @@ export default function Posts() {
   }, []);
 
   if (loading) return <LoadingWheel />;
-  if (forbidden) return <Forbidden />;
+  if (!loggedIn) return <Forbidden />;
   if (error) return <LoadingError />;
 
   return (
     <div className="allPostsContainer">
-      {posts.map((post) => {
-        <p>{post.title}</p>;
-      })}
+      {posts.length === 0 ? (
+        <div className="plainTextContainer">
+          <h1 className="title">No Posts</h1>
+        </div>
+      ) : (
+        posts.map((post) => (
+          <Link key={post._id} className="cardLink" to={`/posts/${post._id}`}>
+            <div className="previewCard">
+              <div className="cardContentContainer">
+                <h1 className="cardTitle">{post.title}</h1>
+                <p className="cardText">
+                  {post.text.length > 300 ? truncate(post.text) : post.text}
+                </p>
+                <span className="cardAuthor">{post.author.username}</span>
+                <span className="cardTimeStamp">
+                  {convertDate(post.timestamp)}
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))
+      )}
     </div>
   );
 }

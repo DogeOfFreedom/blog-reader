@@ -1,10 +1,13 @@
 import { useCallback, useState } from "react";
 import Footer from "./Footer";
 import NavBar from "./NavBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+import LoadingWheel from "./LoadingWheel";
 
 export default function SignUp() {
+  const { setLoggedIn } = useOutletContext();
+  const navigate = useNavigate();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -13,12 +16,18 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isAuthor, setIsAuthor] = useState(false);
   const [preview, setPreview] = useState();
+  const [uploadFile, setUploadFile] = useState();
+  const [formError, setFormError] = useState();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
 
   const onDrop = useCallback((acceptedFiles) => {
     const previewFile = acceptedFiles[0];
+    setUploadFile(previewFile);
     const URLObject = URL.createObjectURL(previewFile);
     setPreview(URLObject);
   }, []);
+
   const {
     getRootProps,
     getInputProps,
@@ -34,13 +43,101 @@ export default function SignUp() {
     maxFiles: 1,
   });
 
-  const handleSubmission = async (e) => {
-    e.preventDefault();
+  const uploadImage = async () => {
+    const responseJSON = await fetch(
+      import.meta.env.VITE_HOSTNAME + "/api/signed_upload"
+    )
+      .then((res) => res.json())
+      .catch((err) => setError(err));
+    const url =
+      "https://api.cloudinary.com/v1_1/" +
+      responseJSON.cloudname +
+      "/auto/upload";
+
+    const formData = new FormData();
+    formData.append("file", uploadFile);
+    formData.append("api_key", responseJSON.apikey);
+    formData.append("timestamp", responseJSON.timestamp);
+    formData.append("signature", responseJSON.signature);
+
+    // Upload to cloudinary
+    const cloudinaryResponse = await fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+      });
+    const imgUrl = cloudinaryResponse.url;
+    fetch(import.meta.env.VITE_HOSTNAME + "/api/upload", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ imgUrl }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+      });
   };
+
+  const handleSubmission = async (e) => {
+    e.preventDefault(); // Prevent page reload
+
+    const hasProfileImg = uploadFile ? true : false;
+    const userObj = {
+      firstname,
+      lastname,
+      email,
+      username,
+      password,
+      confirmPassword,
+      isAuthor,
+      hasProfileImg,
+    };
+    await fetch(import.meta.env.VITE_HOSTNAME + "/api/sign-up", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userObj),
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
+          setLoading(true);
+          setLoggedIn(true);
+          await uploadImage();
+        } else {
+          const body = await res.json();
+          setFormError(body.error);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+      });
+  };
+
+  if (loading)
+    return (
+      <>
+        <LoadingWheel />
+        <p>Submitting Form, please wait</p>
+      </>
+    );
 
   return (
     <>
-      <NavBar />
       <form className="signUpForm" onSubmit={handleSubmission}>
         <h1 className="title">Sign Up</h1>
         <div className="inputContainer">
@@ -129,6 +226,7 @@ export default function SignUp() {
             <img className="previewImg" src={preview} alt="" />
           </div>
         )}
+        {formError && <p className="errorMsg">{formError}</p>}
         <p>
           Already have an account? <Link to="/login">Login</Link>
         </p>
