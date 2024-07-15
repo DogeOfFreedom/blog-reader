@@ -180,22 +180,36 @@ footer {
   font-size: var(--text)
 }
 
+.cardIsPublished {
+  text-decoration: underline;
+  font-size:var(--text)
+}
+
 /* Post Page */
 .postContainer {
   display: flex;
   flex-direction: column;
 
-  .authorDetails {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 20px;
-    font-size: var(--text);
-  }
-
   p {
     font-size: var(--text);
   }
+}
+
+.authorDetails {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: var(--text);
+}
+
+.publishDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-size: var(--text);
 }
 
 .createCommentForm { 
@@ -204,19 +218,23 @@ footer {
   gap: 15px;
   align-items: flex-start;
   margin-bottom: 20px;
-  
+
   textarea {
-    resize: none;
-    width: 100%;
-    height: 100px;
-    border-radius: 15px;
-    font-size: var(--text);
-    box-sizing: border-box;
-    padding: 10px;
-    background-color: var(--white-1);
     box-shadow: 0px 3px 2px rgb(201, 201, 201);
-    font-family: raleway;
   }
+}
+
+textarea {
+  resize: none;
+  width: 100%;
+  height: 200px;
+  border-radius: 15px;
+  font-size: var(--text);
+  box-sizing: border-box;
+  padding: 10px;
+  background-color: var(--white-1);
+  
+  font-family: raleway;
 }
 
 .commentsContainer { 
@@ -225,6 +243,12 @@ footer {
   align-items: flex-start;
   gap: 20px;
   margin-bottom: 50px;
+  
+  h2 {
+    font-family: raleway;
+    font-size: var(--text);
+    align-self: center;
+  }
 }
 
 .comment {
