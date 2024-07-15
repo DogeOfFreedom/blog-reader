@@ -73,10 +73,12 @@ export default function Post() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newComment),
-    }).catch((error) => {
-      console.log(error);
-      setError(error);
-    });
+    })
+      .then(() => setUserComment(""))
+      .catch((error) => {
+        console.log(error);
+        setError(error);
+      });
 
     // Get list of new comments
     await fetch(
@@ -119,6 +121,7 @@ export default function Post() {
           value={userComment}
           onChange={(e) => setUserComment(e.target.value)}
           maxLength="500"
+          id="newComment"
           required
         ></textarea>
         <button className="actionBtn" type="submit">

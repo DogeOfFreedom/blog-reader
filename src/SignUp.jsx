@@ -147,6 +147,7 @@ export default function SignUp() {
             onChange={(e) => setFirstname(e.target.value)}
             type="text"
             name="firstname"
+            id="firstname"
             required
           />
         </div>
@@ -157,16 +158,19 @@ export default function SignUp() {
             onChange={(e) => setLastname(e.target.value)}
             type="text"
             name="lastname"
+            id="lastname"
             required
           />
         </div>
         <div className="inputContainer">
-          <label htmlFor="Email">Email</label>
+          <label htmlFor="email">Email</label>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             name="email"
+            id="email"
+            autoComplete="off"
             required
           />
         </div>
@@ -177,6 +181,8 @@ export default function SignUp() {
             onChange={(e) => setUsername(e.target.value)}
             type="text"
             name="username"
+            id="username"
+            autoComplete="off"
             required
           />
         </div>
@@ -187,6 +193,7 @@ export default function SignUp() {
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             name="password"
+            id="password"
             required
           />
         </div>
@@ -197,11 +204,12 @@ export default function SignUp() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             type="password"
             name="confirm_password"
+            id="confirm_password"
             required
           />
         </div>
         <div className="checkboxContainer">
-          <input type="checkbox" name="isAuthor" />
+          <input type="checkbox" name="isAuthor" id="isAuthor" />
           <label
             value={isAuthor}
             onChange={(e) => setIsAuthor(e.target.value)}
@@ -211,9 +219,9 @@ export default function SignUp() {
           </label>
         </div>
         <div className="inputContainer">
-          <label htmlFor="">Profile Picture</label>
+          <label htmlFor="profilePicture">Profile Picture</label>
           <div {...getRootProps({ className: "dropzone" })}>
-            <input {...getInputProps()} />
+            <input {...getInputProps({ id: "profilePicture" })} />
             {!isDragActive && <p>Drag & Drop Here, or Click to Select Files</p>}
             {isDragAccept && <p>Valid File Type</p>}
             {isDragReject && (

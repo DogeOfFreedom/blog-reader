@@ -19,17 +19,15 @@ export default function Posts() {
           credentials: "include",
         }
       )
-        .then((res) => {
+        .then(async (res) => {
           if (res.status === 403) {
             setLoading(false);
-            throw new Error("Forbidden");
+            setError("");
+          } else {
+            const data = await res.json();
+            setLoading(false);
+            setPosts(data);
           }
-          return res;
-        })
-        .then((res) => res.json())
-        .then((res) => {
-          setLoading(false);
-          setPosts(res);
         })
         .catch((error) => {
           if (error.message === "Forbidden") {

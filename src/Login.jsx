@@ -50,7 +50,9 @@ export default function Login() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             type="text"
+            id="username"
             name="username"
+            autoComplete="off"
             required
           />
         </div>
@@ -60,7 +62,9 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
+            id="password"
             name="password"
+            autoComplete="off"
             required
           />
         </div>
