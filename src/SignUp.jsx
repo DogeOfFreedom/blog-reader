@@ -127,12 +127,11 @@ export default function SignUp() {
         setError(err);
       });
   };
-
   if (loading)
     return (
       <>
         <LoadingWheel />
-        <p>Submitting Form, please wait</p>
+        <p style={"text-align: centre"}>Submitting Form, please wait</p>
       </>
     );
 
