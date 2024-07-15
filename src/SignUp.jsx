@@ -128,9 +128,7 @@ export default function SignUp() {
       });
   };
 
-  // if (loading)
-  const debug = true;
-  if (debug) {
+  if (loading) {
     return (
       <>
         <LoadingWheel />
@@ -138,6 +136,7 @@ export default function SignUp() {
       </>
     );
   }
+
   return (
     <>
       <form className="signUpForm" onSubmit={handleSubmission}>
