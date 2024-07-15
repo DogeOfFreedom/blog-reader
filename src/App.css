@@ -410,3 +410,7 @@ textarea {
     margin-bottom: 30px;
   }
 }
+
+.centreText {
+  text-align: center;
+}

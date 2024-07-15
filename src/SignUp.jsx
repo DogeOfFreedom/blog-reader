@@ -127,14 +127,17 @@ export default function SignUp() {
         setError(err);
       });
   };
-  if (loading)
+
+  // if (loading)
+  const debug = true;
+  if (debug) {
     return (
       <>
         <LoadingWheel />
-        <p style={"text-align: centre"}>Submitting Form, please wait</p>
+        <p className="centreText">Submitting Form, please wait</p>
       </>
     );
-
+  }
   return (
     <>
       <form className="signUpForm" onSubmit={handleSubmission}>
