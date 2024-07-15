@@ -209,14 +209,18 @@ export default function SignUp() {
           />
         </div>
         <div className="checkboxContainer">
-          <input type="checkbox" name="isAuthor" id="isAuthor" />
-          <label
-            value={isAuthor}
-            onChange={(e) => setIsAuthor(e.target.value)}
-            htmlFor="isAuthor"
-          >
-            Author?
-          </label>
+          <input
+            type="checkbox"
+            name="isAuthor"
+            id="isAuthor"
+            onClick={() => {
+              if (isAuthor) {
+                return setIsAuthor(false);
+              }
+              return setIsAuthor(true);
+            }}
+          />
+          <label htmlFor="isAuthor">Author?</label>
         </div>
         <div className="inputContainer">
           <label htmlFor="profilePicture">Profile Picture</label>

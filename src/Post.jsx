@@ -151,7 +151,7 @@ export default function Post() {
             ))
           ) : (
             <>
-              <h1>No Comments Yet</h1>
+              <h2>No Comments Yet</h2>
             </>
           )}
         </div>
